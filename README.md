@@ -1,1 +1,4 @@
 # CS4530_u1323769_u6047873_u1414035
+Serena Hering u6047873
+Shea Jensen u1323769
+Caroline Zurcher u1414035
