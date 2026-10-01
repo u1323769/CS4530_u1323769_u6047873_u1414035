@@ -1,5 +1,3 @@
-package com.example.drawingapp.ui.splash
-
 /**
  * File:         SplashScreen.kt
  * Owner:        Serena
@@ -7,13 +5,20 @@ package com.example.drawingapp.ui.splash
  * Phase:        1
  *
  * Purpose:
- *   Animated splash screen shown when the app launches. Plays a short
- *   animation, then calls onFinished() so navigation moves on.
+ *   Animated splash screen shown on launch. Calls onFinished() when done.
  *
  * Used by:
- *   - AppNavigation (start destination)
+ *   - AppNavigation (start screen)
  *
  * TODO(Serena):
- *   - Animation (e.g. fade/scale in the app name or logo, ~1.5 sec)
- *   - Call onFinished() when done
+ *   - ~1.5 sec animation, then call onFinished()
  */
+package com.example.drawingapp.ui.splash
+
+import androidx.compose.runtime.Composable
+
+/** Splash screen shown when the app opens. */
+@Composable
+fun SplashScreen(onFinished: () -> Unit) {
+    // TODO(Serena)
+}

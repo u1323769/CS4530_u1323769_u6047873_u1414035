@@ -1,5 +1,3 @@
-package com.example.drawingapp.ui.drawing
-
 /**
  * File:         StrokeGeometry.kt
  * Owner:        Shea
@@ -7,16 +5,23 @@ package com.example.drawingapp.ui.drawing
  * Phase:        1
  *
  * Purpose:
- *   Plain math helpers for drawing (no UI code) so they can be unit
- *   tested. Example: filling in points between fast touch events so
- *   strokes don't look dotted.
+ *   Plain math helpers (no UI) so they can be unit tested.
  *
  * Used by:
  *   - DrawingCanvas
  *
  * Tested by:
  *   - StrokeGeometryTest.kt
- *
- * TODO(Shea):
- *   - interpolate(points, spacing) helper
  */
+package com.example.drawingapp.ui.drawing
+
+import androidx.compose.ui.geometry.Offset
+
+object StrokeGeometry {
+
+    /** Adds points between touches so no two neighbors are farther apart than [spacing]. */
+    fun interpolate(points: List<Offset>, spacing: Float): List<Offset> {
+        // TODO(Shea)
+        return points
+    }
+}

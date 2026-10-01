@@ -1,5 +1,3 @@
-package com.example.drawingapp.ui.toolbar
-
 /**
  * File:         PenToolbar.kt
  * Owner:        Serena
@@ -7,19 +5,33 @@ package com.example.drawingapp.ui.toolbar
  * Phase:        1
  *
  * Purpose:
- *   Pen customization controls: color picker, size slider, shape
- *   selector, and clear button.
+ *   Color picker, size slider, shape selector, and clear button.
  *
  * Inputs / Outputs:
  *   - In:  current PenSettings
  *   - Out: onColorSelected / onSizeChanged / onShapeSelected / onClear
- *          callbacks (does NOT talk to the ViewModel directly)
- *
- * Used by:
- *   - DrawingScreen
+ *          (does NOT talk to the ViewModel directly)
  *
  * TODO(Serena):
- *   - Build the three controls + clear button
- *   - Highlight the selected color/shape
- *   - Tablet layout
+ *   - Build the controls, highlight current selection, tablet layout
  */
+package com.example.drawingapp.ui.toolbar
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import com.example.drawingapp.model.PenSettings
+import com.example.drawingapp.model.PenShape
+
+/** Pen customization controls. */
+@Composable
+fun PenToolbar(
+    penSettings: PenSettings,
+    onColorSelected: (Color) -> Unit,
+    onSizeChanged: (Float) -> Unit,
+    onShapeSelected: (PenShape) -> Unit,
+    onClear: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // TODO(Serena)
+}

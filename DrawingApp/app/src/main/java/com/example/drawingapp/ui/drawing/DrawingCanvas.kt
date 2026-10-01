@@ -1,5 +1,3 @@
-package com.example.drawingapp.ui.drawing
-
 /**
  * File:         DrawingCanvas.kt
  * Owner:        Shea
@@ -7,19 +5,34 @@ package com.example.drawingapp.ui.drawing
  * Phase:        1
  *
  * Purpose:
- *   The area the user draws on. Captures touch/drag gestures and draws
- *   each stroke with its own color, size, and shape.
+ *   Captures drag gestures and draws each stroke with its own
+ *   color, size, and shape.
  *
  * Inputs / Outputs:
- *   - In:  list of strokes to draw
- *   - Out: onStrokeStart / onStrokeMove / onStrokeEnd callbacks
+ *   - In:  strokes to draw
+ *   - Out: onStrokeStart / onStrokeMove / onStrokeEnd
  *          (does NOT talk to the ViewModel directly)
- *
- * Used by:
- *   - DrawingScreen
  *
  * TODO(Shea):
  *   - Canvas + pointerInput drag detection
- *   - Draw CIRCLE, SQUARE, and LINE pens
+ *   - Draw CIRCLE, SQUARE, LINE pens
  *   - Single tap leaves a dot
  */
+package com.example.drawingapp.ui.drawing
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import com.example.drawingapp.model.Stroke
+
+/** The drawing surface. */
+@Composable
+fun DrawingCanvas(
+    strokes: List<Stroke>,
+    onStrokeStart: (Offset) -> Unit,
+    onStrokeMove: (Offset) -> Unit,
+    onStrokeEnd: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // TODO(Shea)
+}
