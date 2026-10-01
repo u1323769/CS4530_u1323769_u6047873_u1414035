@@ -1,5 +1,3 @@
-package com.example.drawingapp.model
-
 /**
  * File:         PenSettings.kt
  * Owner:        Caroline
@@ -7,18 +5,25 @@ package com.example.drawingapp.model
  * Phase:        1
  *
  * Purpose:
- *   Holds the current pen settings: color, size, and shape. Also defines
- *   the PenShape enum (CIRCLE, SQUARE, LINE).
+ *   Holds the current pen settings (color, size, shape) and defines PenShape.
  *
  * Used by:
- *   - DrawingViewModel (stores the current pen)
- *   - PenToolbar (shows and changes it)
- *   - DrawingCanvas (draws strokes with it)
+ *   - DrawingViewModel, PenToolbar, DrawingCanvas
  *
  * Notes:
- *   - Immutable data class. Change it with .copy().
- *   - SHARED CONTRACT: talk to the team before renaming or removing fields.
- *
- * TODO(Caroline):
- *   - Create PenShape enum and PenSettings data class with defaults
+ *   - Immutable. Change with .copy().
+ *   - SHARED CONTRACT: ask the team before renaming/removing fields.
  */
+package com.example.drawingapp.model
+
+import androidx.compose.ui.graphics.Color
+
+/** Available pen tip shapes. */
+enum class PenShape { CIRCLE, SQUARE, LINE }
+
+/** The pen used for new strokes. */
+data class PenSettings(
+    val color: Color = Color.Black,
+    val size: Float = 10f,
+    val shape: PenShape = PenShape.CIRCLE
+)
