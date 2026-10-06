@@ -56,7 +56,6 @@ private val OceanBlue = Color(0xFF1E88E5)
 private const val RAY_COUNT = 12
 private val LETTERS = listOf("c", "s", "s")
 
-// Swap for FontFamily(Font(R.font.pacifico))
 private val SplashFont = FontFamily.Cursive
 
 /** Splash screen shown when the app opens. */
