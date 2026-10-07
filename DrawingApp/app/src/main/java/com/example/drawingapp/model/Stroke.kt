@@ -5,15 +5,12 @@
  * Phase:        1
  *
  * Purpose:
- *   One continuous mark: the points touched plus the pen used to draw it.
+ *   One continuous mark on the canvas: every point touched between finger
+ *   down and finger up, plus the pen settings used to draw it.
  *
  * Used by:
- *   - DrawingViewModel, DrawingCanvas
- *
- * Notes:
- *   - Each stroke keeps its own PenSettings so old strokes don't change
- *     when the pen changes.
- *   - SHARED CONTRACT. Phase 2 will save these.
+ *   - DrawingViewModel (finished strokes + the one in progress)
+ *   - DrawingCanvas (renders them)
  */
 package com.example.drawingapp.model
 
