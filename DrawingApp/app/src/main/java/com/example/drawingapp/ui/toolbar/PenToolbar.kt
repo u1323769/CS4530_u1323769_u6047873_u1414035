@@ -9,7 +9,6 @@
  */
 package com.example.drawingapp.ui.toolbar
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -40,6 +39,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.example.drawingapp.model.PenSettings
 import com.example.drawingapp.model.PenShape
+import androidx.compose.foundation.layout.Spacer
 
 /** Pen customization controls. */
 @Composable
@@ -56,32 +56,35 @@ fun PenToolbar(
         tonalElevation = 3.dp
     ) {
         BoxWithConstraints(Modifier.padding(12.dp)) {
-            val isWide = maxWidth >= 600.dp // tablets / landscape
-
-            if (isWide) {
-                // Everything on one line
-                Row(
+            when {
+                // Tablets: everything fits on one line
+                maxWidth >= 1000.dp -> Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     ColorPicker(penSettings.color, onColorSelected)
-                    SizeSlider(penSettings.size, onSizeChanged, Modifier.width(220.dp))
+                    SizeSlider(penSettings.size, onSizeChanged, Modifier.weight(1f))
                     ShapeSelector(penSettings.shape, onShapeSelected)
-                    OutlinedButton(onClick = onClear) { Text("Clear") }
+                    ClearButton(onClear)
                 }
-            } else {
-                // Phones: stack the controls
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+
+                // Phones in landscape: two rows
+                maxWidth >= 600.dp -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        ColorPicker(penSettings.color, onColorSelected)
+                        SizeSlider(penSettings.size, onSizeChanged, Modifier.weight(1f))
+                    }
+                    ShapesAndClearRow(penSettings.shape, onShapeSelected, onClear)
+                }
+
+                // Phones in portrait: stacked
+                else -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     ColorPicker(penSettings.color, onColorSelected)
                     SizeSlider(penSettings.size, onSizeChanged, Modifier.fillMaxWidth())
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        ShapeSelector(penSettings.shape, onShapeSelected)
-                        OutlinedButton(onClick = onClear) { Text("Clear") }
-                    }
+                    ShapesAndClearRow(penSettings.shape, onShapeSelected, onClear)
                 }
             }
         }
@@ -89,21 +92,46 @@ fun PenToolbar(
 }
 
 @Composable
-private fun ColorPicker(
-    selected: Color,
-    onColorSelected: (Color) -> Unit
+private fun ShapesAndClearRow(
+    selected: PenShape,
+    onShapeSelected: (PenShape) -> Unit,
+    onClear: () -> Unit
 ) {
     Row(
-        modifier = Modifier.horizontalScroll(rememberScrollState()),
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        // let Clear be measured first, so it never gets squeezed
+        ShapeSelector(selected, onShapeSelected, Modifier.weight(1f, fill = false))
+        Spacer(Modifier.weight(0.001f))
+        ClearButton(onClear)
+    }
+}
+
+@Composable
+private fun ClearButton(onClear: () -> Unit) {
+    OutlinedButton(onClick = onClear) {
+        Text("Clear", maxLines = 1, softWrap = false)
+    }
+}
+
+@Composable
+private fun ColorPicker(
+    selected: Color,
+    onColorSelected: (Color) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         PenOptions.palette.forEachIndexed { index, color ->
             val isSelected = color == selected
             Surface(
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(32.dp)
                     .clip(CircleShape)
-                    .background(color)
                     .border(
                         width = if (isSelected) 3.dp else 1.dp,
                         color = if (isSelected) MaterialTheme.colorScheme.primary
@@ -123,6 +151,27 @@ private fun ColorPicker(
 }
 
 @Composable
+private fun ShapeSelector(
+    selected: PenShape,
+    onShapeSelected: (PenShape) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        PenShape.entries.forEach { shape ->
+            FilterChip(
+                selected = shape == selected,
+                onClick = { onShapeSelected(shape) },
+                label = {
+                    Text(shape.name.lowercase().replaceFirstChar { it.uppercase() })
+                }
+            )
+        }
+    }
+}
+@Composable
 private fun SizeSlider(
     size: Float,
     onSizeChanged: (Float) -> Unit,
@@ -138,26 +187,5 @@ private fun SizeSlider(
             onValueChange = { onSizeChanged(PenOptions.clampSize(it)) },
             valueRange = PenOptions.MIN_SIZE..PenOptions.MAX_SIZE
         )
-    }
-}
-
-@Composable
-private fun ShapeSelector(
-    selected: PenShape,
-    onShapeSelected: (PenShape) -> Unit
-) {
-    Row(
-        modifier = Modifier.horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        PenShape.entries.forEach { shape ->
-            FilterChip(
-                selected = shape == selected,
-                onClick = { onShapeSelected(shape) },
-                label = {
-                    Text(shape.name.lowercase().replaceFirstChar { it.uppercase() })
-                }
-            )
-        }
     }
 }
