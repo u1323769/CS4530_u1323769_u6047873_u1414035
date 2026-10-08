@@ -1,18 +1,9 @@
 /**
  * File:         StrokeGeometryTest.kt
- * Owner:        Shea
- * Contributors: Caroline (wrote initial tests)
+ * Owner:        Caroline
  * Phase:        1
  *
- * What this tests:
- *   StrokeGeometry.interpolate(): filling gaps between touch points so
- *   stamped shapes (SQUARE, TRIANGLE) don't look dotted. Checks that
- *   gaps are never bigger than the spacing, the original points and
- *   their order are kept, new points stay on the line, and edge cases
- *   (empty, single point, duplicate points) don't break.
- *
- * How to run:
- *   ./gradlew testDebugUnitTest, or right-click this file > Run
+ * Tests StrokeGeometry class
  */
 package com.example.drawingapp.ui.drawing
 
@@ -25,10 +16,8 @@ class StrokeGeometryTest {
 
     private val delta = 0.001f
 
-    /** True if two points are the same, allowing for tiny float rounding. */
     private fun close(a: Offset, b: Offset) = (a - b).getDistance() < delta
 
-    /** Fails if any two neighboring points are farther apart than [spacing]. */
     private fun assertNoGapsBiggerThan(points: List<Offset>, spacing: Float) {
         points.zipWithNext().forEach { (a, b) ->
             val gap = (b - a).getDistance()

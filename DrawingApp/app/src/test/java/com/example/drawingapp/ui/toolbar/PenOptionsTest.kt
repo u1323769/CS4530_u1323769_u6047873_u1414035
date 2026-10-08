@@ -1,15 +1,9 @@
 /**
  * File:         PenOptionsTest.kt
- * Owner:        Serena
- * Contributors: Caroline (wrote initial tests)
+ * Owner:        Caroline
  * Phase:        1
  *
- * What this tests:
- *   PenOptions: size clamping (in range, out of range, edges, NaN,
- *   infinity), the palette, and that the defaults are valid.
- *
- * How to run:
- *   ./gradlew testDebugUnitTest, or right-click this file > Run
+ * Tests PenOptions class
  */
 package com.example.drawingapp.ui.toolbar
 

@@ -1,16 +1,9 @@
 /**
  * File:         DrawingViewModelTest.kt
  * Owner:        Caroline
- * Contributors:
  * Phase:        1
  *
- * What this tests:
- *   DrawingViewModel: starting/adding/ending strokes, taps, clear(),
- *   pen changes (color, size clamping, shape), and that old strokes keep
- *   their own pen settings.
- *
- * How to run:
- *   ./gradlew testDebugUnitTest, or right-click this file > Run
+ * Tests DrawingViewModel class
  */
 package com.example.drawingapp.viewmodel
 
