@@ -1,21 +1,9 @@
 /**
  * File:         DrawingScreen.kt
  * Owner:        Shea
- * Contributors: Serena (toolbar wiring)
  * Phase:        1
  *
- * Purpose:
- *   The full drawing screen. The ONLY composable that talks to the
- *   ViewModel: passes state down to DrawingCanvas and PenToolbar and
- *   sends their events back up.
- *
- * Notes:
- *   - viewModel() returns the same instance after rotation.
- *   - Read state with collectAsStateWithLifecycle().
- *
- * TODO(Shea):
- *   - Canvas on top, PenToolbar at the bottom
- *   - Tablet/landscape layout
+ * The full drawing screen.
  */
 package com.example.drawingapp.ui.drawing
 

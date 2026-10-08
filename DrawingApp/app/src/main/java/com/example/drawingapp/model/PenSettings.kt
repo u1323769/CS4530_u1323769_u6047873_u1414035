@@ -1,17 +1,9 @@
 /**
  * File:         PenSettings.kt
  * Owner:        Caroline
- * Contributors:
  * Phase:        1
  *
- * Purpose:
- *   Holds the current pen settings (color, size, shape) and defines PenShape.
- *
- * Used by:
- *   - DrawingViewModel (stores the current pen)
- *   - PenToolbar (shows and changes it)
- *   - DrawingCanvas (draws each stroke with it)
- *
+ * Holds the current pen settings (color, size, shape) and defines PenShape.
  */
 package com.example.drawingapp.model
 

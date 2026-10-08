@@ -1,17 +1,9 @@
 /**
  * File:         StrokeGeometry.kt
  * Owner:        Shea
- * Contributors:
  * Phase:        1
  *
- * Purpose:
- *   Plain math helpers (no UI) so they can be unit tested.
- *
- * Used by:
- *   - DrawingCanvas
- *
- * Tested by:
- *   - StrokeGeometryTest.kt
+ * Plain math helpers so they can be unit tested.
  */
 package com.example.drawingapp.ui.drawing
 

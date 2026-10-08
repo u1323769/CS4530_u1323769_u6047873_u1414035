@@ -1,17 +1,10 @@
 /**
  * File:         DrawingCanvas.kt
  * Owner:        Shea
- * Contributors: Caroline
  * Phase:        1
  *
- * Purpose:
- *   Captures drag gestures and draws each stroke with its own
- *   color, size, and shape.
- *
- * Inputs / Outputs:
- *   - In:  strokes to draw
- *   - Out: onStrokeStart / onStrokeMove / onStrokeEnd
- *          (does NOT talk to the ViewModel directly)
+ * Captures drag gestures and draws each stroke with its own
+ * color, size, and shape.
  */
 package com.example.drawingapp.ui.drawing
 
@@ -108,7 +101,7 @@ private fun DrawScope.drawPenStroke(stroke: Stroke) {
     }
 }
 
-/** A tap: one shape at a single point. */
+/** One shape at a single point for a tap. */
 private fun DrawScope.drawDot(pen: PenSettings, center: Offset) {
     when (pen.shape) {
         PenShape.CIRCLE -> drawCircle(color = pen.color, radius = pen.size / 2f, center = center)
@@ -117,7 +110,7 @@ private fun DrawScope.drawDot(pen: PenSettings, center: Offset) {
     }
 }
 
-/** A filled square centered on [center], [PenSettings.size] wide. */
+/** A filled square centered in the center of the stroke. */
 private fun DrawScope.drawSquare(pen: PenSettings, center: Offset) {
     val half = pen.size / 2f
     drawRect(
@@ -127,7 +120,7 @@ private fun DrawScope.drawSquare(pen: PenSettings, center: Offset) {
     )
 }
 
-/** A filled, point-up triangle centered on [center], [PenSettings.size] wide and tall. */
+/** A filled, point-up triangle centered in the center of the stroke. */
 private fun DrawScope.drawTriangle(pen: PenSettings, center: Offset) {
     val half = pen.size / 2f
     val path = Path().apply {
@@ -139,7 +132,7 @@ private fun DrawScope.drawTriangle(pen: PenSettings, center: Offset) {
     drawPath(path = path, color = pen.color)
 }
 
-/** Smooth curve through the points (used for the CIRCLE pen). */
+/** Smooth curve through the points for the circle pen. */
 private fun smoothPath(points: List<Offset>): Path {
     val path = Path()
     path.moveTo(points[0].x, points[0].y)

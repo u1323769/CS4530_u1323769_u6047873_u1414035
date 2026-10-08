@@ -1,16 +1,10 @@
 /**
  * File:         Stroke.kt
  * Owner:        Caroline
- * Contributors:
  * Phase:        1
  *
- * Purpose:
- *   One continuous mark on the canvas: every point touched between finger
- *   down and finger up, plus the pen settings used to draw it.
- *
- * Used by:
- *   - DrawingViewModel (finished strokes + the one in progress)
- *   - DrawingCanvas (renders them)
+ * One continuous mark on the canvas: every point touched between finger
+ * down and finger up, plus the pen settings used to draw it.
  */
 package com.example.drawingapp.model
 

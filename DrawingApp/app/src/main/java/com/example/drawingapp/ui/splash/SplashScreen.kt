@@ -2,7 +2,6 @@
  * File:         SplashScreen.kt
  * Owner:        Serena
  * Phase:        1
-
  */
 package com.example.drawingapp.ui.splash
 

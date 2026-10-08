@@ -1,7 +1,6 @@
 /**
  * File:         MainActivity.kt
- * Owner:        Team (shared, ask before big changes)
- * Contributors:
+ * Owner:        Team
  * Phase:        1
  *
  * Purpose:
