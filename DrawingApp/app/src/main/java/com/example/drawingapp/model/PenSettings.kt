@@ -18,7 +18,7 @@ package com.example.drawingapp.model
 import androidx.compose.ui.graphics.Color
 import com.example.drawingapp.ui.toolbar.PenOptions
 
-enum class PenShape { CIRCLE, SQUARE, LINE }
+enum class PenShape { CIRCLE, SQUARE, TRIANGLE }
 
 /**
  * The pen used for new strokes.

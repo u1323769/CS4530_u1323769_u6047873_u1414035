@@ -1,7 +1,7 @@
 /**
  * File:         DrawingCanvas.kt
  * Owner:        Shea
- * Contributors:
+ * Contributors: Caroline
  * Phase:        1
  *
  * Purpose:
@@ -12,11 +12,6 @@
  *   - In:  strokes to draw
  *   - Out: onStrokeStart / onStrokeMove / onStrokeEnd
  *          (does NOT talk to the ViewModel directly)
- *
- * TODO(Shea):
- *   - Canvas + pointerInput drag detection
- *   - Draw CIRCLE, SQUARE, LINE pens
- *   - Single tap leaves a dot
  */
 package com.example.drawingapp.ui.drawing
 
@@ -79,13 +74,14 @@ fun DrawingCanvas(
     }
 }
 
+/** Draws one stroke according to its pen shape. */
 private fun DrawScope.drawPenStroke(stroke: Stroke) {
     val pts = stroke.points
     val pen = stroke.penSettings
     if (pts.isEmpty()) return
 
     if (pts.size == 1) {
-        drawDot(pen, pts[0],)
+        drawDot(pen, pts[0])
         return
     }
 
@@ -100,30 +96,28 @@ private fun DrawScope.drawPenStroke(stroke: Stroke) {
             )
         )
 
-        PenShape.LINE -> drawPath(
-            path = smoothPath(pts),
-            color = pen.color,
-            style = DrawStroke(
-                width = pen.size,
-                cap = StrokeCap.Butt,
-                join = StrokeJoin.Miter
-            )
-        )
-
         PenShape.SQUARE -> {
             val step = max(1f, pen.size / 3f)
             StrokeGeometry.interpolate(pts, step).forEach { drawSquare(pen, it) }
         }
+
+        PenShape.TRIANGLE -> {
+            val step = max(1f, pen.size / 3f)
+            StrokeGeometry.interpolate(pts, step).forEach { drawTriangle(pen, it) }
+        }
     }
 }
 
+/** A tap: one shape at a single point. */
 private fun DrawScope.drawDot(pen: PenSettings, center: Offset) {
     when (pen.shape) {
+        PenShape.CIRCLE -> drawCircle(color = pen.color, radius = pen.size / 2f, center = center)
         PenShape.SQUARE -> drawSquare(pen, center)
-        else -> drawCircle(color = pen.color, radius = pen.size / 2f, center = center)
+        PenShape.TRIANGLE -> drawTriangle(pen, center)
     }
 }
 
+/** A filled square centered on [center], [PenSettings.size] wide. */
 private fun DrawScope.drawSquare(pen: PenSettings, center: Offset) {
     val half = pen.size / 2f
     drawRect(
@@ -133,6 +127,19 @@ private fun DrawScope.drawSquare(pen: PenSettings, center: Offset) {
     )
 }
 
+/** A filled, point-up triangle centered on [center], [PenSettings.size] wide and tall. */
+private fun DrawScope.drawTriangle(pen: PenSettings, center: Offset) {
+    val half = pen.size / 2f
+    val path = Path().apply {
+        moveTo(center.x, center.y - half)          // top
+        lineTo(center.x + half, center.y + half)   // bottom right
+        lineTo(center.x - half, center.y + half)   // bottom left
+        close()
+    }
+    drawPath(path = path, color = pen.color)
+}
+
+/** Smooth curve through the points (used for the CIRCLE pen). */
 private fun smoothPath(points: List<Offset>): Path {
     val path = Path()
     path.moveTo(points[0].x, points[0].y)

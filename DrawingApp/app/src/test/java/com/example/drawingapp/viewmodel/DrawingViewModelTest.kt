@@ -139,8 +139,8 @@ class DrawingViewModelTest {
 
     @Test
     fun `setShape changes the pen shape`() {
-        vm.setShape(PenShape.LINE)
-        assertEquals(PenShape.LINE, vm.penSettings.value.shape)
+        vm.setShape(PenShape.TRIANGLE)
+        assertEquals(PenShape.TRIANGLE, vm.penSettings.value.shape)
     }
 
     @Test
