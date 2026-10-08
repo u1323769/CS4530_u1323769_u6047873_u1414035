@@ -16,7 +16,7 @@ enum class PenShape { CIRCLE, SQUARE, TRIANGLE }
  * The pen used for new strokes.
  *
  * @property color stroke color
- * @property size  pen tip size in pixels (PenOptions.MIN_SIZE..MAX_SIZE)
+ * @property size  pen tip size in pixels
  * @property shape pen tip shape
  */
 data class PenSettings(

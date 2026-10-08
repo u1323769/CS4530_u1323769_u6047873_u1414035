@@ -13,7 +13,7 @@ import kotlin.math.ceil
 
 object StrokeGeometry {
 
-    /** Adds points between touches so no two neighbors are farther apart than [spacing]. */
+    /** Adds points between touches so no two neighbors are farther apart than the spacing. */
     fun interpolate(points: List<Offset>, spacing: Float): List<Offset> {
         if (points.size < 2 || spacing <= 0f) return points
 

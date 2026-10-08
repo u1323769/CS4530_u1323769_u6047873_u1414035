@@ -3,8 +3,7 @@
  * Owner:        Team
  * Phase:        1
  *
- * Purpose:
- *   App entry point. Applies the theme and starts AppNavigation.
+ * App entry point. Applies the theme and starts AppNavigation.
  */
 package com.example.drawingapp
 
