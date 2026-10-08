@@ -1,16 +1,8 @@
 /**
  * File:         SplashScreen.kt
  * Owner:        Serena
- * Contributors:
  * Phase:        1
- *
- * Purpose:
- *   Animated splash screen shown on launch: a sun above the cursive
- *   letters "css" (our initials / Creative Sketch Studio) bobbing like
- *   waves, with the app title underneath. Calls onFinished() when done.
- *
- * Used by:
- *   - AppNavigation (start screen)
+
  */
 package com.example.drawingapp.ui.splash
 
@@ -63,8 +55,8 @@ private val SplashFont = FontFamily.Cursive
 fun SplashScreen(onFinished: () -> Unit) {
     val sunScale = remember { Animatable(0f) }
     val rayProgress = remember { Animatable(0f) }
-    val letterProgress = remember { Animatable(0f) } // 0..3, one unit per letter
-    val wavePhase = remember { Animatable(0f) }      // each 1.0 = one full bob
+    val letterProgress = remember { Animatable(0f) }
+    val wavePhase = remember { Animatable(0f) }
     val titleAlpha = remember { Animatable(0f) }
 
     val currentOnFinished by rememberUpdatedState(onFinished)
@@ -114,7 +106,7 @@ fun SplashScreen(onFinished: () -> Unit) {
                             alpha = appear
                             val rise = (1f - appear) * 24.dp.toPx()
 
-                            // Rolling wave: each letter lags behind the previous one
+                            // Rolling wave, each letter lags behind the previous one
                             val angle = (wavePhase.value * 2 * PI - index * 0.9).toFloat()
                             val bob = sin(angle) * 8.dp.toPx()
 

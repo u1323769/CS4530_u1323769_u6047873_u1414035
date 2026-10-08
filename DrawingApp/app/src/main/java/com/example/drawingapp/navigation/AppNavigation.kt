@@ -1,18 +1,10 @@
 /**
  * File:         AppNavigation.kt
  * Owner:        Serena
- * Contributors:
  * Phase:        1
  *
  * Purpose:
  *   Routes and navigation. Phase 1 flow: Splash -> Drawing.
- *
- * Used by:
- *   - MainActivity
- *
- * Notes:
- *   - Pop splash off the back stack so Back exits the app.
- *   - Later phases add: gallery, backup/sharing.
  */
 package com.example.drawingapp.navigation
 

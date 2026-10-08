@@ -1,17 +1,7 @@
 /**
  * File:         PenOptions.kt
  * Owner:        Serena
- * Contributors:
  * Phase:        1
- *
- * Purpose:
- *   Non-UI pen constants: color palette, size range, clampSize().
- *
- * Used by:
- *   - PenToolbar, DrawingViewModel
- *
- * Tested by:
- *   - PenOptionsTest.kt
  */
 package com.example.drawingapp.ui.toolbar
 
@@ -36,7 +26,7 @@ object PenOptions {
 
     val DEFAULT_COLOR: Color = palette.first()
 
-    /** Keeps a pen size inside MIN_SIZE..MAX_SIZE. NaN falls back to DEFAULT_SIZE. */
+    /** Keeps a pen size inside MIN_SIZE-MAX_SIZE. NaN falls back to DEFAULT_SIZE. */
     fun clampSize(size: Float): Float {
         if (size.isNaN()) return DEFAULT_SIZE
         return size.coerceIn(MIN_SIZE, MAX_SIZE)

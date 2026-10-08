@@ -1,16 +1,11 @@
 /**
  * File:         PenToolbar.kt
  * Owner:        Serena
- * Contributors:
  * Phase:        1
  *
  * Purpose:
  *   Color picker, size slider, shape selector, and clear button.
  *
- * Inputs / Outputs:
- *   - In:  current PenSettings
- *   - Out: onColorSelected / onSizeChanged / onShapeSelected / onClear
- *          (does NOT talk to the ViewModel directly)
  */
 package com.example.drawingapp.ui.toolbar
 
