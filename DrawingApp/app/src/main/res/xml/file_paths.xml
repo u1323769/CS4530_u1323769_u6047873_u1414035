@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  File:    file_paths.xml
+  Owner:   Serena
+  Phase:   2
+
+  Purpose:
+    Tells FileProvider which folder it is allowed to share files from.
+    ShareHelper saves the drawing to cacheDir/shared/ and shares it
+    from there.
+
+  Used by:
+    - AndroidManifest.xml (<provider>)
+    - ShareHelper.kt
+-->
+<paths>
+    <cache-path name="shared_images" path="shared/" />
+</paths>
