@@ -1,6 +1,7 @@
 /**
  * File:         DrawingScreen.kt
  * Owner:        Shea
+ * Contributors: Caroline (ViewModel factory)
  * Phase:        1
  *
  * The full drawing screen.
@@ -32,7 +33,7 @@ import androidx.compose.runtime.remember
 
 /** Drawing screen: connects the ViewModel to the canvas and toolbar. */
 @Composable
-fun DrawingScreen(viewModel: DrawingViewModel = viewModel()) {
+fun DrawingScreen(viewModel: DrawingViewModel = viewModel(factory = DrawingViewModel.Factory)) {
     val penSettings by viewModel.penSettings.collectAsStateWithLifecycle()
     val finishedStrokes by viewModel.strokes.collectAsStateWithLifecycle()
     val currentStroke by viewModel.currentStroke.collectAsStateWithLifecycle()

@@ -1,31 +1,69 @@
 /**
  * File:         DrawingViewModelTest.kt
  * Owner:        Caroline
- * Phase:        1
+ * Phase:        1, 2
  *
- * Tests DrawingViewModel class
+ *  Tests Phase 1: starting/adding/ending strokes, taps, clear(), pen changes
+ *  (color, size clamping, shape), and that old strokes keep their own pen.
+ *  Tests Phase 2: new vs. existing drawings, loading strokes/title/background,
+ *  saving (insert first, then update), blank titles, importing a background.
  */
 package com.example.drawingapp.viewmodel
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.SavedStateHandle
+import com.example.drawingapp.data.DrawingRepository
+import com.example.drawingapp.data.ImageStorage
+import com.example.drawingapp.fakes.FakeDrawingDao
+import com.example.drawingapp.model.NEW_DRAWING_ID
+import com.example.drawingapp.model.PenSettings
 import com.example.drawingapp.model.PenShape
+import com.example.drawingapp.model.Stroke
+import com.example.drawingapp.testutil.MainDispatcherRule
 import com.example.drawingapp.ui.toolbar.PenOptions
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
+import java.io.ByteArrayInputStream
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DrawingViewModelTest {
 
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
+    @get:Rule
+    val tempFolder = TemporaryFolder()
+
+    private lateinit var dao: FakeDrawingDao
+    private lateinit var storage: ImageStorage
+    private lateinit var repository: DrawingRepository
     private lateinit var vm: DrawingViewModel
 
     @Before
     fun setUp() {
-        vm = DrawingViewModel()
+        dao = FakeDrawingDao()
+        storage = ImageStorage(tempFolder.newFolder("images"))
+        repository = DrawingRepository(
+            dao = dao,
+            imageStorage = storage,
+            ioDispatcher = mainDispatcherRule.dispatcher
+        )
+        vm = DrawingViewModel(repository, SavedStateHandle())
     }
+
+    /** Opens an existing drawing the way navigation would. */
+    private fun openDrawing(id: Long) =
+        DrawingViewModel(repository, SavedStateHandle(mapOf(DrawingViewModel.DRAWING_ID_ARG to id)))
 
     @Test
     fun `starts with no strokes and default pen`() {
@@ -184,5 +222,110 @@ class DrawingViewModelTest {
         vm.endStroke()
 
         assertEquals(PenOptions.DEFAULT_COLOR, vm.strokes.value[0].penSettings.color)
+    }
+
+    @Test
+    fun `new drawing starts empty with default title`() {
+        assertEquals(NEW_DRAWING_ID, vm.drawingId.value)
+        assertTrue(vm.strokes.value.isEmpty())
+        assertEquals(DrawingViewModel.DEFAULT_TITLE, vm.title.value)
+        assertNull(vm.backgroundPath.value)
+    }
+
+    @Test
+    fun `setTitle changes the title`() {
+        vm.setTitle("Sunset")
+        assertEquals("Sunset", vm.title.value)
+    }
+
+    @Test
+    fun `saving a new drawing gives it a real id`() {
+        vm.startStroke(Offset.Zero); vm.endStroke()
+
+        vm.save()
+
+        assertNotEquals(NEW_DRAWING_ID, vm.drawingId.value)
+        assertEquals(1, dao.count())
+    }
+
+    @Test
+    fun `saving twice updates the same drawing`() {
+        vm.save()
+        val firstId = vm.drawingId.value
+
+        vm.startStroke(Offset.Zero); vm.endStroke()
+        vm.save()
+
+        assertEquals(firstId, vm.drawingId.value)
+        assertEquals(1, dao.count())
+    }
+
+    @Test
+    fun `saved drawing has the strokes and title`() = runTest {
+        vm.setTitle("Sunset")
+        vm.startStroke(Offset(1f, 1f)); vm.addPoint(Offset(2f, 2f)); vm.endStroke()
+
+        vm.save()
+
+        val saved = repository.getDrawing(vm.drawingId.value)!!
+        assertEquals("Sunset", saved.title)
+        assertEquals(vm.strokes.value, saved.strokes)
+    }
+
+    @Test
+    fun `blank title is saved as Untitled`() = runTest {
+        vm.setTitle("   ")
+        vm.save()
+
+        assertEquals(DrawingViewModel.DEFAULT_TITLE, repository.getDrawing(vm.drawingId.value)!!.title)
+    }
+
+    @Test
+    fun `opening an existing drawing loads its strokes title and background`() = runTest {
+        val stroke = Stroke(listOf(Offset(5f, 5f)), PenSettings(color = Color.Red))
+        val id = repository.saveDrawing(NEW_DRAWING_ID, "Cat", listOf(stroke), "bg.png", null)
+
+        val opened = openDrawing(id)
+
+        assertEquals(id, opened.drawingId.value)
+        assertEquals(listOf(stroke), opened.strokes.value)
+        assertEquals("Cat", opened.title.value)
+        assertEquals("bg.png", opened.backgroundPath.value)
+    }
+
+    @Test
+    fun `editing an opened drawing and saving updates it`() = runTest {
+        val id = repository.saveDrawing(NEW_DRAWING_ID, "Cat", emptyList(), null, null)
+        val opened = openDrawing(id)
+
+        opened.startStroke(Offset(3f, 3f)); opened.endStroke()
+        opened.save()
+
+        assertEquals(1, dao.count())
+        assertEquals(1, repository.getDrawing(id)!!.strokes.size)
+    }
+
+    @Test
+    fun `opening a drawing that doesn't exist starts empty`() {
+        val opened = openDrawing(999)
+        assertTrue(opened.strokes.value.isEmpty())
+        assertEquals(DrawingViewModel.DEFAULT_TITLE, opened.title.value)
+    }
+
+    @Test
+    fun `importing a background stores the image and sets its path`() {
+        vm.importBackground(ByteArrayInputStream(byteArrayOf(1, 2, 3)))
+
+        val path = vm.backgroundPath.value
+        assertNotNull(path)
+        assertTrue(storage.isInStorage(path!!))
+    }
+
+    @Test
+    fun `background is saved with the drawing`() = runTest {
+        vm.importBackground(ByteArrayInputStream(byteArrayOf(1)))
+        vm.save()
+
+        assertEquals(vm.backgroundPath.value, repository.getDrawing(vm.drawingId.value)!!.backgroundPath)
     }
 }

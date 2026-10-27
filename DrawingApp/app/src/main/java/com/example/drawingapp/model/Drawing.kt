@@ -1,24 +1,27 @@
 /**
  * File:         Drawing.kt
  * Owner:        Caroline
- * Contributors:
  * Phase:        2
  *
- * Purpose:
- *   App-level drawing models. Drawing holds everything needed to edit a
- *   drawing; DrawingSummary holds just what the gallery needs.
- *
- * Used by:
- *   - DrawingRepository, DrawingViewModel, GalleryViewModel, GalleryScreen
- *
- * Notes:
- *   - NEW_DRAWING_ID (-1) means "not saved yet".
- *   - SHARED CONTRACT: ask the team before changing.
- *
- * TODO(Caroline):
- *   - Drawing(id, title, strokes, backgroundPath)
- *   - DrawingSummary(id, title, thumbnailPath, updatedAt)
- *   - const val NEW_DRAWING_ID = -1L
+ * App-level drawing models. Drawing holds everything needed to edit a
+ * drawing; DrawingSummary holds just what the gallery needs.
  */
 package com.example.drawingapp.model
 
+const val NEW_DRAWING_ID = -1L
+
+// A full drawing, used when opening one to edit.
+data class Drawing(
+    val id: Long,
+    val title: String,
+    val strokes: List<Stroke>,
+    val backgroundPath: String?
+)
+
+// Just what the gallery grid needs to show one drawing.
+data class DrawingSummary(
+    val id: Long,
+    val title: String,
+    val thumbnailPath: String?,
+    val updatedAt: Long
+)
