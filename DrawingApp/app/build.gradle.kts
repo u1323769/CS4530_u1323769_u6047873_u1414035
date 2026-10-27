@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation("com.github.skydoves:colorpicker-compose:1.1.4")
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
