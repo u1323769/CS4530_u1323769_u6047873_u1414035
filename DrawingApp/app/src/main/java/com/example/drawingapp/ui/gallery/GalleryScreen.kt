@@ -1,21 +1,10 @@
 /**
  * File:         GalleryScreen.kt
  * Owner:        Shea
- * Contributors:
  * Phase:        2
  *
- * Purpose:
- *   Main screen after the splash: shows all saved drawings and a button
- *   to start a new one.
- *
- * Inputs / Outputs:
- *   - In:  list of DrawingSummary
- *   - Out: onOpenDrawing(id), onNewDrawing(), onDelete(id)
- *
- * TODO(Shea):
- *   - Grid of thumbnails + titles (works on phone and tablet)
- *   - "New drawing" button
- *   - Message when there are no drawings yet
+ * Main screen after the splash: shows all saved drawings and a button
+ * to start a new one.
  */
 package com.example.drawingapp.ui.gallery
 
@@ -203,7 +192,7 @@ private fun DrawingCard(
 }
 
 /**
- * Shows the saved thumbnail file. [updatedAt] is a key so the image reloads
+ * Shows the saved thumbnail file. updatedAt is a key so the image reloads
  * when the drawing is re-saved over the same file path.
  */
 @Composable

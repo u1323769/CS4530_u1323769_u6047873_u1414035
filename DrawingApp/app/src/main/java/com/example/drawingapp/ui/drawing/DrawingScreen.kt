@@ -1,7 +1,6 @@
 /**
  * File:         DrawingScreen.kt
  * Owner:        Shea
- * Contributors: Caroline (ViewModel factory)
  * Phase:        1
  *
  * The full drawing screen.

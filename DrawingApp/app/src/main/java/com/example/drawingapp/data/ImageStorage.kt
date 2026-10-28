@@ -3,16 +3,8 @@
  * Owner:        Serena
  * Phase:        2
  *
- * Purpose:
- *   Saves and deletes image files (thumbnails, imported images) in the
- *   app's storage. The database only stores their file paths.
- *
- * Used by:
- *   - DrawingRepository
- *   - ShareHelper (fileFor() to share an image)
- * Notes:
- *   - Core logic works on bytes and files so it can be unit tested
- *     without an emulator. Bitmap/Uri helpers are thin wrappers.
+ *  Saves and deletes image files (thumbnails, imported images) in the
+ *  app's storage. The database only stores their file paths.
  */
 package com.example.drawingapp.data
 

@@ -3,17 +3,8 @@
  * Owner:        Serena
  * Phase:        2
  *
- * Purpose:
- *   Shares a drawing with other apps and imports images from the
- *   device's gallery.
- *
- * Used by:
- *   - DrawingScreen
- *
- * Notes:
- *   - Sharing uses FileProvider
- *     The image is written to cacheDir/shared/ and shared from there.
- *   - Importing uses the photo picker
+ * Shares a drawing with other apps and imports images from the
+ * device's gallery.
  */
 package com.example.drawingapp.share
 

@@ -4,15 +4,8 @@
  * Contributors:
  * Phase:        2
  *
- * Purpose:
- *   Draws strokes (and any imported background) onto an image, off
- *   screen, so the drawing can be saved as a thumbnail or shared.
- *
- * Used by:
- *   - DrawingScreen (save thumbnail, share)
- *
- * TODO(Shea):
- *   - render(strokes, background, width, height): ImageBitmap
+ * Draws strokes (and any imported background) onto an image, off
+ * screen, so the drawing can be saved as a thumbnail or shared.
  */
 package com.example.drawingapp.ui.drawing
 
@@ -50,14 +43,12 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-// ---------- Drawing into any DrawScope ----------
-
 /** Paints every stroke, oldest first. */
 fun DrawScope.drawStrokes(strokes: List<Stroke>) {
     strokes.forEach { drawPenStroke(it) }
 }
 
-/** Paints [image] scaled to fit the scope, centered (like ContentScale.Fit). */
+/** Paints the image scaled to fit the scope, centered. */
 fun DrawScope.drawBackgroundImage(image: ImageBitmap?) {
     if (image == null) return
     val scale = min(size.width / image.width, size.height / image.height)
@@ -133,8 +124,6 @@ private fun smoothPath(points: List<Offset>): Path {
     return path
 }
 
-// ---------- Helpers that don't need a screen ----------
-
 object DrawingRenderer {
 
     /** Smallest rectangle containing every point, or null if there are no points. */
@@ -172,8 +161,8 @@ object DrawingRenderer {
     }
 
     /**
-     * Small preview for the gallery: the whole canvas ([canvasWidth] x [canvasHeight])
-     * shrunk so its longest side is [maxSide] px.
+     * Small preview for the gallery: the whole canvas
+     * shrunk so its longest side is maxSide px.
      */
     fun renderThumbnail(
         strokes: List<Stroke>,
@@ -219,7 +208,7 @@ object DrawingRenderer {
         FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
     }
 
-    /** Loads an image file, downsampled so its longest side is about [maxDimension] px. */
+    /** Loads an image file, downsampled so its longest side is about maxDimension px. */
     fun loadImage(path: String, maxDimension: Int = 2048): ImageBitmap? {
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         BitmapFactory.decodeFile(path, bounds)

@@ -3,18 +3,8 @@
  * Owner:        Serena
  * Phase:        1, updated in 2
  *
- * Purpose:
- *   Compact pen controls: color picker (color wheel dialog with presets),
- *   size slider, shape dropdown, and clear button.
- *
- * Inputs / Outputs:
- *   - In:  current PenSettings
- *   - Out: onColorSelected / onSizeChanged / onShapeSelected / onClear
- *
- * Layouts:
- *   - Phone portrait:  two compact rows
- *   - Phone landscape: narrow vertical side panel
- *   - Tablet:          single row
+ * Compact pen controls: color picker (color wheel dialog with presets),
+ * size slider, shape dropdown, and clear button.
  */
 package com.example.drawingapp.ui.toolbar
 

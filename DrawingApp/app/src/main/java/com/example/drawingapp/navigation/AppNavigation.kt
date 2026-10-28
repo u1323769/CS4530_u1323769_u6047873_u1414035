@@ -3,8 +3,7 @@
  * Owner:        Serena
  * Phase:        1
  *
- * Purpose:
- *   Routes and navigation. Phase 1 flow: Splash -> Drawing.
+ * Routes and navigation. Phase 1 flow: Splash -> Drawing.
  */
 package com.example.drawingapp.navigation
 
