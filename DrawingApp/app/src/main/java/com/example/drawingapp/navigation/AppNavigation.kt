@@ -40,7 +40,7 @@ fun AppNavigation() {
         composable(Routes.SPLASH) {
             SplashScreen(
                 onFinished = {
-                    navController.navigate(Routes.DRAWING) {
+                    navController.navigate(Routes.GALLERY) {
                         // Remove splash from the back stack so Back exits the app
                         popUpTo(Routes.SPLASH) { inclusive = true }
                         launchSingleTop = true
