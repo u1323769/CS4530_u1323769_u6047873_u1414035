@@ -29,7 +29,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import java.io.InputStream
 
 class DrawingViewModel(
@@ -126,21 +130,31 @@ class DrawingViewModel(
         }
     }
 
+    /** Only one save runs at a time.*/
+    private val saveMutex = Mutex()
+
     /**
-     * Save the drawing. [thumbnail] is the rendered image for the gallery
-     * (DrawingScreen makes it with DrawingRenderer); null keeps the old one.
+     * Save the drawing.
      */
     fun save(thumbnail: ImageBitmap? = null) {
         viewModelScope.launch {
-            val newId = repository.saveDrawing(
-                id = _drawingId.value,
-                title = _title.value.ifBlank { DEFAULT_TITLE },
-                strokes = _strokes.value,
-                backgroundPath = _backgroundPath.value,
-                thumbnail = thumbnail
-            )
-            _drawingId.value = newId
-            savedStateHandle[DRAWING_ID_ARG] = newId
+            withContext(NonCancellable) {
+                saveMutex.withLock {
+                    val isNew = _drawingId.value == NEW_DRAWING_ID
+                    val isEmpty = _strokes.value.isEmpty() && _backgroundPath.value == null
+                    if (isNew && isEmpty) return@withLock
+
+                    val newId = repository.saveDrawing(
+                        id = _drawingId.value,
+                        title = _title.value.ifBlank { DEFAULT_TITLE },
+                        strokes = _strokes.value,
+                        backgroundPath = _backgroundPath.value,
+                        thumbnail = thumbnail
+                    )
+                    _drawingId.value = newId
+                    savedStateHandle[DRAWING_ID_ARG] = newId
+                }
+            }
         }
     }
 

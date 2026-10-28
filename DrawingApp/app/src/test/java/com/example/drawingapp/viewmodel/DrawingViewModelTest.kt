@@ -250,6 +250,7 @@ class DrawingViewModelTest {
 
     @Test
     fun `saving twice updates the same drawing`() {
+        vm.startStroke(Offset.Zero); vm.endStroke()
         vm.save()
         val firstId = vm.drawingId.value
 
@@ -275,6 +276,7 @@ class DrawingViewModelTest {
     @Test
     fun `blank title is saved as Untitled`() = runTest {
         vm.setTitle("   ")
+        vm.startStroke(Offset.Zero); vm.endStroke()
         vm.save()
 
         assertEquals(DrawingViewModel.DEFAULT_TITLE, repository.getDrawing(vm.drawingId.value)!!.title)
@@ -327,5 +329,36 @@ class DrawingViewModelTest {
         vm.save()
 
         assertEquals(vm.backgroundPath.value, repository.getDrawing(vm.drawingId.value)!!.backgroundPath)
+    }
+
+    @Test
+    fun `empty new drawing is not saved`() {
+        vm.save()
+
+        assertEquals(NEW_DRAWING_ID, vm.drawingId.value)
+        assertEquals(0, dao.count())
+    }
+
+    @Test
+    fun `saving on back and on stop only stores the drawing once`() {
+        vm.startStroke(Offset.Zero); vm.endStroke()
+
+        // DrawingScreen saves on Back and again when the screen stops
+        vm.save()
+        vm.save()
+
+        assertEquals(1, dao.count())
+    }
+
+    @Test
+    fun `opened drawing is saved even if all strokes are cleared`() = runTest {
+        val id = repository.saveDrawing(NEW_DRAWING_ID, "Cat",
+            listOf(Stroke(listOf(Offset.Zero), PenSettings())), null, null)
+        val opened = openDrawing(id)
+
+        opened.clear()
+        opened.save()
+
+        assertTrue(repository.getDrawing(id)!!.strokes.isEmpty())
     }
 }
