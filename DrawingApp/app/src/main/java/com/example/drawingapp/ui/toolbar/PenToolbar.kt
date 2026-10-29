@@ -360,8 +360,8 @@ private fun ColorSwatch(
             )
             .clickable(onClick = onClick)
             .semantics {
-                contentDescription = description
-                this.selected = isSelected
+                contentDescription = description // what TalkBack reads aloud
+                this.selected = isSelected // TalkBack adds "selected"
             },
         color = color,
         shape = CircleShape

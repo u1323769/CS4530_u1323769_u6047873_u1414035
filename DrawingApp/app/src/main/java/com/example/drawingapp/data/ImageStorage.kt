@@ -34,14 +34,6 @@ class ImageStorage(directory: File) {
     fun deleteImage(path: String): Boolean =
         isInStorage(path) && File(path).delete()
 
-    // Loads the image at path, or null if it doesn't exist.
-    fun loadImage(path: String): Bitmap? =
-        loadBytes(path)?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
-
-    // Copies a gallery image into storage. Returns its path, or null on failure.
-    fun importImage(context: Context, uri: Uri): String? =
-        context.contentResolver.openInputStream(uri)?.let { importFrom(it) }
-
     // The File for a stored image (ShareHelper uses this).
     fun fileFor(path: String): File {
         require(isInStorage(path)) { "Path is not in image storage: $path" }
