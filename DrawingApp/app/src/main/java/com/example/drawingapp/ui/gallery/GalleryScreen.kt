@@ -1,6 +1,7 @@
 /**
  * File:         GalleryScreen.kt
  * Owner:        Shea
+ * Contributors: Caroline (import via rememberImagePicker)
  * Phase:        2
  *
  * Main screen after the splash: shows all saved drawings and a button
@@ -8,9 +9,6 @@
  */
 package com.example.drawingapp.ui.gallery
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -57,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.drawingapp.model.DrawingSummary
+import com.example.drawingapp.share.rememberImagePicker
 import com.example.drawingapp.ui.drawing.DrawingRenderer
 import com.example.drawingapp.viewmodel.GalleryViewModel
 import kotlinx.coroutines.Dispatchers
@@ -79,13 +78,9 @@ fun GalleryScreen(
     var pendingDelete by remember { mutableStateOf<DrawingSummary?>(null) }
 
     val context = LocalContext.current
-    val imagePicker = rememberLauncherForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        if (uri != null) {
-            context.contentResolver.openInputStream(uri)?.let { input ->
-                viewModel.importImage(input, onOpenDrawing)
-            }
+    val pickImage = rememberImagePicker { uri ->
+        context.contentResolver.openInputStream(uri)?.let { input ->
+            viewModel.importImage(input, onOpenDrawing)
         }
     }
 
@@ -94,11 +89,7 @@ fun GalleryScreen(
             CenterAlignedTopAppBar(
                 title = { Text("My Drawings") },
                 actions = {
-                    TextButton(onClick = {
-                        imagePicker.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
-                    }) { Text("Import image") }
+                    TextButton(onClick = pickImage) { Text("Import image") }
                 }
             )
         },

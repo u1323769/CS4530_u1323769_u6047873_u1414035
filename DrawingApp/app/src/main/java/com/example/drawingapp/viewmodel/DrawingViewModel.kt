@@ -34,7 +34,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import java.io.InputStream
 
 class DrawingViewModel(
     private val repository: DrawingRepository,
@@ -116,18 +115,6 @@ class DrawingViewModel(
     /** Change the pen shape for new strokes. */
     fun setShape(shape: PenShape) {
         _penSettings.update { it.copy(shape = shape) }
-    }
-
-    /** Change the drawing's title. */
-    fun setTitle(newTitle: String) {
-        _title.value = newTitle
-    }
-
-    /** Copy an imported image into app storage and use it as the background. */
-    fun importBackground(input: InputStream) {
-        viewModelScope.launch {
-            _backgroundPath.value = repository.importImage(input)
-        }
     }
 
     /** Only one save runs at a time.*/

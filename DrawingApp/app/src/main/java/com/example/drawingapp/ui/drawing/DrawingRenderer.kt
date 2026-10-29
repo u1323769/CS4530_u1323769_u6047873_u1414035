@@ -9,12 +9,9 @@
  */
 package com.example.drawingapp.ui.drawing
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
@@ -32,12 +29,9 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.core.content.FileProvider
 import com.example.drawingapp.model.PenSettings
 import com.example.drawingapp.model.PenShape
 import com.example.drawingapp.model.Stroke
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.math.max
 import kotlin.math.min
@@ -126,18 +120,6 @@ private fun smoothPath(points: List<Offset>): Path {
 
 object DrawingRenderer {
 
-    /** Smallest rectangle containing every point, or null if there are no points. */
-    fun contentBounds(strokes: List<Stroke>): Rect? {
-        val pts = strokes.flatMap { it.points }
-        if (pts.isEmpty()) return null
-        return Rect(
-            left = pts.minOf { it.x },
-            top = pts.minOf { it.y },
-            right = pts.maxOf { it.x },
-            bottom = pts.maxOf { it.y }
-        )
-    }
-
     /** Draws white paper, the optional background image, then the strokes into a Bitmap. */
     fun renderToBitmap(
         strokes: List<Stroke>,
@@ -188,24 +170,6 @@ object DrawingRenderer {
             }
         }
         return target
-    }
-
-    /**
-     * Renders the drawing to a PNG in the app cache and returns a content:// Uri
-     * that other apps can read. Needs the FileProvider from the manifest.
-     */
-    suspend fun exportToCache(
-        context: Context,
-        strokes: List<Stroke>,
-        width: Int,
-        height: Int,
-        background: ImageBitmap? = null
-    ): Uri = withContext(Dispatchers.IO) {
-        val bitmap = renderToBitmap(strokes, width, height, background)
-        val dir = File(context.cacheDir, "shared").apply { mkdirs() }
-        val file = File(dir, "drawing_${System.currentTimeMillis()}.png")
-        file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
-        FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
     }
 
     /** Loads an image file, downsampled so its longest side is about maxDimension px. */

@@ -10,8 +10,6 @@ package com.example.drawingapp.data
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
@@ -23,7 +21,6 @@ class ImageStorage(directory: File) {
 
     // Main API (used by DrawingRepository)
 
-
     // Saves bitmap as a PNG and returns its file path.
     // Pass existingPath to overwrite that image instead of creating a new file.
 
@@ -34,15 +31,7 @@ class ImageStorage(directory: File) {
     fun deleteImage(path: String): Boolean =
         isInStorage(path) && File(path).delete()
 
-    // Loads the image at path, or null if it doesn't exist.
-    fun loadImage(path: String): Bitmap? =
-        loadBytes(path)?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
-
-    // Copies a gallery image into storage. Returns its path, or null on failure.
-    fun importImage(context: Context, uri: Uri): String? =
-        context.contentResolver.openInputStream(uri)?.let { importFrom(it) }
-
-    // The File for a stored image (ShareHelper uses this).
+    // The File for a stored image. Only paths inside this folder are allowed.
     fun fileFor(path: String): File {
         require(isInStorage(path)) { "Path is not in image storage: $path" }
         return File(path)

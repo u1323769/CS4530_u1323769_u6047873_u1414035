@@ -33,7 +33,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import java.io.ByteArrayInputStream
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DrawingViewModelTest {
@@ -233,12 +232,6 @@ class DrawingViewModelTest {
     }
 
     @Test
-    fun `setTitle changes the title`() {
-        vm.setTitle("Sunset")
-        assertEquals("Sunset", vm.title.value)
-    }
-
-    @Test
     fun `saving a new drawing gives it a real id`() {
         vm.startStroke(Offset.Zero); vm.endStroke()
 
@@ -262,24 +255,14 @@ class DrawingViewModelTest {
     }
 
     @Test
-    fun `saved drawing has the strokes and title`() = runTest {
-        vm.setTitle("Sunset")
+    fun `saved drawing has the strokes and default title`() = runTest {
         vm.startStroke(Offset(1f, 1f)); vm.addPoint(Offset(2f, 2f)); vm.endStroke()
 
         vm.save()
 
         val saved = repository.getDrawing(vm.drawingId.value)!!
-        assertEquals("Sunset", saved.title)
+        assertEquals(DrawingViewModel.DEFAULT_TITLE, saved.title)
         assertEquals(vm.strokes.value, saved.strokes)
-    }
-
-    @Test
-    fun `blank title is saved as Untitled`() = runTest {
-        vm.setTitle("   ")
-        vm.startStroke(Offset.Zero); vm.endStroke()
-        vm.save()
-
-        assertEquals(DrawingViewModel.DEFAULT_TITLE, repository.getDrawing(vm.drawingId.value)!!.title)
     }
 
     @Test
@@ -315,20 +298,14 @@ class DrawingViewModelTest {
     }
 
     @Test
-    fun `importing a background stores the image and sets its path`() {
-        vm.importBackground(ByteArrayInputStream(byteArrayOf(1, 2, 3)))
+    fun `background is kept when an opened drawing is saved`() = runTest {
+        val id = repository.saveDrawing(NEW_DRAWING_ID, "Photo", emptyList(), "bg.png", null)
+        val opened = openDrawing(id)
 
-        val path = vm.backgroundPath.value
-        assertNotNull(path)
-        assertTrue(storage.isInStorage(path!!))
-    }
+        opened.startStroke(Offset.Zero); opened.endStroke()
+        opened.save()
 
-    @Test
-    fun `background is saved with the drawing`() = runTest {
-        vm.importBackground(ByteArrayInputStream(byteArrayOf(1)))
-        vm.save()
-
-        assertEquals(vm.backgroundPath.value, repository.getDrawing(vm.drawingId.value)!!.backgroundPath)
+        assertEquals("bg.png", repository.getDrawing(id)!!.backgroundPath)
     }
 
     @Test

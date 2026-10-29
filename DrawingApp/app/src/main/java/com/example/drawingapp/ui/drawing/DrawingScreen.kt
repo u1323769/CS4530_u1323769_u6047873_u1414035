@@ -1,13 +1,13 @@
 /**
  * File:         DrawingScreen.kt
  * Owner:        Shea
+ * Contributors: Caroline (share via ShareHelper)
  * Phase:        1
  *
  * The full drawing screen.
  */
 package com.example.drawingapp.ui.drawing
 
-import android.content.Intent
 import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
@@ -45,6 +45,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.drawingapp.share.ShareHelper
 import com.example.drawingapp.ui.toolbar.PenToolbar
 import com.example.drawingapp.viewmodel.DrawingViewModel
 import kotlinx.coroutines.Dispatchers
@@ -104,15 +105,13 @@ fun DrawingScreen(
     val shareDrawing: () -> Unit = {
         if (canvasSize.width > 0 && canvasSize.height > 0) {
             scope.launch {
-                val uri = DrawingRenderer.exportToCache(
-                    context, strokes, canvasSize.width, canvasSize.height, background
-                )
-                val send = Intent(Intent.ACTION_SEND).apply {
-                    type = "image/png"
-                    putExtra(Intent.EXTRA_STREAM, uri)
-                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                // DrawingRenderer draws the image; ShareHelper opens the share sheet
+                val bitmap = withContext(Dispatchers.Default) {
+                    DrawingRenderer.renderToBitmap(
+                        strokes, canvasSize.width, canvasSize.height, background
+                    )
                 }
-                context.startActivity(Intent.createChooser(send, "Share drawing"))
+                ShareHelper.shareImage(context, bitmap)
             }
         }
     }

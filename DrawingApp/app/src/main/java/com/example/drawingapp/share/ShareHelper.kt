@@ -13,7 +13,6 @@ import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -67,29 +66,7 @@ object ShareHelper {
         return file
     }
 
-
-    // Loads a picked gallery image as a Bitmap, scaled down
-    // Returns null if the image can't be read.
-    fun loadBitmap(context: Context, uri: Uri, maxSize: Int = 2048): Bitmap? {
-        val resolver = context.contentResolver
-
-        // read only the image size
-        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        resolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, bounds) }
-        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
-
-        // Pick a power-of-two scale that fits within maxSize
-        var sampleSize = 1
-        while (bounds.outWidth / sampleSize > maxSize || bounds.outHeight / sampleSize > maxSize) {
-            sampleSize *= 2
-        }
-
-        // decode the scaled image
-        val options = BitmapFactory.Options().apply { inSampleSize = sampleSize }
-        return resolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, options) }
-    }
 }
-
 
  // Remembers a gallery image picker. Call the returned function to open it
 @Composable
