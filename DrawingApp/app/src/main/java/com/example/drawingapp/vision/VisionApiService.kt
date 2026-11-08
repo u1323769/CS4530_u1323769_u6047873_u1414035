@@ -3,14 +3,17 @@
  * Owner:        Caroline
  * Phase:        3
  *
- * Purpose:
- *   Retrofit interface for the Vision API endpoint (POST v1/images:annotate).
- *
- * Used by:
- *   - VisionApiClient, VisionRepository
- *
- * TODO(Caroline):
- *   - suspend fun annotate(request): VisionResponse
+ * Retrofit interface for the Google Cloud Vision API. Retrofit turns this
+ * into the real HTTP call.
  */
 package com.example.drawingapp.vision
 
+import retrofit2.http.Body
+import retrofit2.http.POST
+
+interface VisionApiService {
+
+    /** Sends one or more images to be analyzed. */
+    @POST("v1/images:annotate")
+    suspend fun annotate(@Body request: VisionRequest): VisionResponse
+}
