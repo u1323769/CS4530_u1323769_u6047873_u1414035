@@ -54,8 +54,28 @@ class RoutesTest {
     }
 
     @Test
+    fun analysis_withId_buildsPathRoute() {
+        assertEquals("analysis/5", Routes.analysis(5))
+    }
+
+    @Test
+    fun analysisPattern_containsIdPlaceholder() {
+        assertTrue(Routes.ANALYSIS.contains(idPlaceholder))
+    }
+
+    @Test
+    fun builtAnalysisRoute_matchesRegisteredPattern() {
+        assertEquals(Routes.analysis(7), Routes.ANALYSIS.replace(idPlaceholder, "7"))
+    }
+
+    @Test
+    fun analysisAndDrawingRoutes_differForSameId() {
+        assertNotEquals(Routes.analysis(3), Routes.drawing(3))
+    }
+
+    @Test
     fun routeNames_areUnique() {
-        val routes = listOf(Routes.SPLASH, Routes.GALLERY, Routes.DRAWING)
+        val routes = listOf(Routes.SPLASH, Routes.GALLERY, Routes.DRAWING, Routes.ANALYSIS)
         assertEquals(routes.size, routes.toSet().size)
     }
 }
