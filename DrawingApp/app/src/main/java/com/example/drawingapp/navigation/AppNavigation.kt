@@ -57,7 +57,8 @@ fun AppNavigation() {
         composable(Routes.GALLERY) {
             GalleryScreen(
                 onNewDrawing = { navController.navigate(Routes.drawing(NEW_DRAWING_ID)) },
-                onOpenDrawing = { id -> navController.navigate(Routes.drawing(id)) }
+                onOpenDrawing = { id -> navController.navigate(Routes.drawing(id)) },
+                onAnalyzeDrawing = { id -> navController.navigate(Routes.analysis(id)) }
             )
         }
 

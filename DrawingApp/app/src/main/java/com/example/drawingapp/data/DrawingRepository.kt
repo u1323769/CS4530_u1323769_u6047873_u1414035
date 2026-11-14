@@ -106,6 +106,6 @@ class DrawingRepository internal constructor(
     }
 }
 
-private fun DrawingEntity.toSummary() = DrawingSummary(id, title, thumbnailPath, updatedAt)
+private fun DrawingEntity.toSummary() = DrawingSummary(id, title, thumbnailPath, updatedAt, backgroundPath != null)
 
 private fun DrawingEntity.toDrawing() = Drawing(id, title, strokes, backgroundPath)

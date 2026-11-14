@@ -9,6 +9,9 @@
  */
 package com.example.drawingapp.ui.gallery
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,10 +29,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -55,7 +60,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.drawingapp.model.DrawingSummary
-import com.example.drawingapp.share.rememberImagePicker
 import com.example.drawingapp.ui.drawing.DrawingRenderer
 import com.example.drawingapp.viewmodel.GalleryViewModel
 import kotlinx.coroutines.Dispatchers
@@ -66,21 +70,28 @@ import java.util.Date
 /**
  * @param onNewDrawing   navigate to an empty drawing
  * @param onOpenDrawing  navigate to the drawing with this id
+ * @param onAnalyzeDrawing navigate to the analysis screen for this drawing id
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GalleryScreen(
     onNewDrawing: () -> Unit,
     onOpenDrawing: (Long) -> Unit,
+    onAnalyzeDrawing: (Long) -> Unit,
     viewModel: GalleryViewModel = viewModel(factory = GalleryViewModel.Factory)
 ) {
     val drawings by viewModel.drawings.collectAsStateWithLifecycle()
     var pendingDelete by remember { mutableStateOf<DrawingSummary?>(null) }
 
     val context = LocalContext.current
-    val pickImage = rememberImagePicker { uri ->
-        context.contentResolver.openInputStream(uri)?.let { input ->
-            viewModel.importImage(input, onOpenDrawing)
+    val imagePicker = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri != null) {
+            context.contentResolver.openInputStream(uri)?.let { input ->
+                // After an import, go straight to the analysis screen
+                viewModel.importImage(input, onAnalyzeDrawing)
+            }
         }
     }
 
@@ -89,7 +100,11 @@ fun GalleryScreen(
             CenterAlignedTopAppBar(
                 title = { Text("My Drawings") },
                 actions = {
-                    TextButton(onClick = pickImage) { Text("Import image") }
+                    TextButton(onClick = {
+                        imagePicker.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    }) { Text("Import image") }
                 }
             )
         },
@@ -120,6 +135,7 @@ fun GalleryScreen(
                     DrawingCard(
                         drawing = drawing,
                         onOpen = { onOpenDrawing(drawing.id) },
+                        onAnalyze = { onAnalyzeDrawing(drawing.id) },
                         onDelete = { pendingDelete = drawing }
                     )
                 }
@@ -149,8 +165,11 @@ fun GalleryScreen(
 private fun DrawingCard(
     drawing: DrawingSummary,
     onOpen: () -> Unit,
+    onAnalyze: () -> Unit,
     onDelete: () -> Unit
 ) {
+    var menuOpen by remember { mutableStateOf(false) }
+
     Card(Modifier.fillMaxWidth().clickable(onClick = onOpen)) {
         Column {
             DrawingThumbnail(
@@ -174,8 +193,29 @@ private fun DrawingCard(
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
-                IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete ${drawing.title}")
+                Box {
+                    IconButton(onClick = { menuOpen = true }) {
+                        Icon(Icons.Default.MoreVert, contentDescription = "Options for ${drawing.title}")
+                    }
+                    DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+                        // Only drawings with an imported image can be analyzed
+                        if (drawing.hasBackgroundImage) {
+                            DropdownMenuItem(
+                                text = { Text("Analyze") },
+                                onClick = {
+                                    menuOpen = false
+                                    onAnalyze()
+                                }
+                            )
+                        }
+                        DropdownMenuItem(
+                            text = { Text("Delete") },
+                            onClick = {
+                                menuOpen = false
+                                onDelete()
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -183,7 +223,7 @@ private fun DrawingCard(
 }
 
 /**
- * Shows the saved thumbnail file. updatedAt is a key so the image reloads
+ * Shows the saved thumbnail file. [updatedAt] is a key so the image reloads
  * when the drawing is re-saved over the same file path.
  */
 @Composable

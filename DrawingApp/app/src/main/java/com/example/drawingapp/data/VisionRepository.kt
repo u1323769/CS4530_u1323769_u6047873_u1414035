@@ -24,3 +24,10 @@
  */
 package com.example.drawingapp.data
 
+import android.app.Application
+
+annotation class VisionRepository {
+    companion object {
+        fun getInstance(app: Application) {}
+    }
+}

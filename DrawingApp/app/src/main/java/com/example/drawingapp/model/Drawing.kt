@@ -23,5 +23,6 @@ data class DrawingSummary(
     val id: Long,
     val title: String,
     val thumbnailPath: String?,
-    val updatedAt: Long
+    val updatedAt: Long,
+    val hasBackgroundImage: Boolean = false
 )
